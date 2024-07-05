@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+typedef struct Node
+{
+    int data;
+    struct Node *left;
+    struct Node *right;
+} Node;
+
+Node *createNode(int data)
+{
+    Node *newNode = (Node *)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+Node *insertNode(Node *root, int data)
+{
+    if (root == NULL)
+    {
+        return createNode(data);
+    }
+
+    printf("Enter 'l' to insert as left chid or 'r' to insert as right chid: ");
+    char choice;
+    scanf(" %c", &choice);
+
+    if (choice == 'l')
+    {
+        root->left = insertNode(root->left, data);
+    }
+    else if (choice == 'r')
+    {
+        root->right = insertNode(root->right, data);
+    }
+    else
+    {
+        printf("Enter either 'l' or 'r'");
+        return root;
+    }
+
+    return root;
+}
+
+int isBSTUtil(struct Node *node, int min, int max)
+{
+    if (node == NULL)
+        return 1;
+
+    if (node->data < min || node->data > max)
+        return 0;
+
+    return isBSTUtil(node->left, min, node->data - 1) && isBSTUtil(node->right, node->data + 1, max);
+}
+
+int isBST(struct Node *root)
+{
+    return isBSTUtil(root, INT_MIN, INT_MAX);
+}
+
+int main()
+{
+    Node *root = NULL;
+    int data, choice;
+
+    while (1)
+    {
+        printf("1. Insert a new node.\n2. Check if the tree is a Binary Search Tree.\n3. Exit.\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+        case 1:
+            printf("Enter the data of new node: ");
+            scanf("%d", &data);
+
+            root = insertNode(root, data);
+            break;
+        case 2:
+            if (isBST(root))
+            {
+                printf("The given tree is a Binary Search Tree\n");
+            }
+            else
+                printf("The given tree is not a Binary Search Tree\n");
+            break;
+        case 3:
+            printf("Exiting...\n");
+            exit(0);
+            break;
+        default:
+            printf("Enter a valid choice.");
+            break;
+        }
+    }
+
+    return 0;
+}
